@@ -68,7 +68,7 @@ GanttMaster.prototype.init = function(place) {
   this.gantt = new Ganttalendar("m", new Date().getTime() - 3600000 * 24 * 2, new Date().getTime() + 3600000 * 24 * 15, this, place.width() * .6);
 
   //setup splitter
-  var splitter = $.splittify.init(place, this.editor.element, this.gantt.element, 70);
+  var splitter = $.splittify.init(place, this.editor.element, this.gantt.element, 50);
   splitter.secondBox.css("overflow-y", "auto").scroll(function() {
     splitter.firstBox.scrollTop(splitter.secondBox.scrollTop());
   });
@@ -204,15 +204,15 @@ GanttMaster.messages = {
   "CANNOT_DEPENDS_ON_ANCESTORS":          "CANNOT_DEPENDS_ON_ANCESTORS",
   "CANNOT_DEPENDS_ON_DESCENDANTS":        "CANNOT_DEPENDS_ON_DESCENDANTS",
   "INVALID_DATE_FORMAT":                  "INVALID_DATE_FORMAT",
-  "GANTT_QUARTER_SHORT": "GANTT_QUARTER_SHORT",
-  "GANTT_SEMESTER_SHORT":"GANTT_SEMESTER_SHORT"
+  "GANTT_QUARTER_SHORT":                  "GANTT_QUARTER_SHORT",
+  "GANTT_SEMESTER_SHORT":                 "GANTT_SEMESTER_SHORT"
 };
 
 
-GanttMaster.prototype.createTask = function (id, name, code, level, start, duration) {
+GanttMaster.prototype.createTask = function (id, name, code, level, start, duration, bid, effort) {
   var factory = new TaskFactory();
 
-  return factory.build(id, name, code, level, start, duration);
+  return factory.build(id, name, code, level, start, duration, bid, effort);
 };
 
 
@@ -296,7 +296,8 @@ GanttMaster.prototype.addTask = function(task, row) {
  * a project contais tasks, resources, roles, and info about permisions
  * @param project
  */
-GanttMaster.prototype.loadProject = function(project) {
+GanttMaster.prototype.loadProject = function(project, Deferred) {
+  var deferred = new Deferred;
   this.beginTransaction();
   this.resources = project.resources;
   this.roles = project.roles;
@@ -317,7 +318,12 @@ GanttMaster.prototype.loadProject = function(project) {
   this.deletedTaskIds=[];
   this.endTransaction();
   var self=this;
-  this.gantt.element.oneTime(200,function(){self.gantt.centerOnToday()});
+  this.gantt.element.oneTime(200,function(){
+      self.gantt.centerOnToday();
+      deferred.resolve('success');
+  });
+  
+  return deferred.promise;
 };
 
 
@@ -329,7 +335,7 @@ GanttMaster.prototype.loadTasks = function(tasks, selectedRow) {
   for (var i=0;i<tasks.length;i++){
     var task = tasks[i];
     if (!(task instanceof Task)) {
-      var t = factory.build(task.id, task.name, task.code, task.level, task.start, task.duration);
+      var t = factory.build(task.id, task.name, task.code, task.level, task.start, task.duration, task.bid, task.effort);
       for (var key in task) {
         if (key!="end" && key!="start")
           t[key] = task[key]; //copy all properties

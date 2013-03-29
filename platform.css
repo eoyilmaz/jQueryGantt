@@ -12,29 +12,29 @@
 
 
 
-*{
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -o-box-sizing:border-box;
-  box-sizing: border-box;
-}
+/**{*/
+  /*-webkit-box-sizing: border-box;*/
+  /*-moz-box-sizing: border-box;*/
+  /*-o-box-sizing:border-box;*/
+  /*box-sizing: border-box;*/
+/*}*/
 
   /*
   -------------------------------------------------------
   body styles
   -------------------------------------------------------
   */
-BODY, TBODY {
-  font-family: arial;
-  font-size: 14px;
-  margin: 0;
-  color: #000000;
-  text-decoration: none;
-}
+/*BODY, TBODY {*/
+  /*font-family: arial;*/
+  /*font-size: 14px;*/
+  /*margin: 0;*/
+  /*color: #000000;*/
+  /*text-decoration: none;*/
+/*}*/
 
-BODY {
-  background-color: #91B4B7; 
-}
+/*BODY {*/
+  /*background-color: #BCD8F4;*/
+/*}*/
 
 a {
   text-decoration: none;
@@ -50,7 +50,7 @@ a:hover, a.aHover {
 h1 {
   font-size:32px;
   line-height: 34px;
-  color:#91B4B7;
+  color:#BCD8F4;
   font-weight:normal;
   margin:0 0 10px 0
 }
@@ -77,7 +77,7 @@ h4 {
 }
 
 #savingMessage{
-  background-color:#E3EDED;
+  background-color:#dedede;
   display:none;
   color:#617777;
   font-weight:bolder;
@@ -180,7 +180,7 @@ TH, .tableHeader {
   font-weight: normal;
   color: #FFFFFF;
   border: none;
-  background-color: #91B4B7;
+  background-color: #dedede;
   padding:2px
 }
 
@@ -296,7 +296,8 @@ form {
 }
 
 select {
-  border:1px solid #91B4B7;
+  border:1px solid #BCD8F4;
+
   padding: 4px;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
@@ -306,7 +307,7 @@ select {
   background-color: white;
   padding: 4px;
   font-size: 16px;
-  border:1px solid #91B4B7;
+  border:1px solid #BCD8F4;
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   -o-border-radius:3px;
@@ -337,7 +338,7 @@ input {
     background-color: white;
     padding: 4px;
     font-size: 16px;
-    border:1px solid #91B4B7;
+    border:1px solid #BCD8F4;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
     -o-border-radius:3px;

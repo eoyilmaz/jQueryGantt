@@ -89,8 +89,8 @@
   Date.preferAmericanFormat = false;
 
   Date.firstDayOfWeek =1;
+  //Date.defaultFormat = "dd/MM/yyyy HH:mm";
   Date.defaultFormat = "dd/MM/yyyy";
-
 
   Number.decimalSeparator = ".";
   Number.groupingSeparator = ",";
@@ -100,19 +100,19 @@
 
 
   var millisInWorkingDay =36000000;
-  var workingDaysPerWeek =5;
+  var workingDaysPerWeek =7;
 
   function isHoliday(date) {
-    var friIsHoly =false;
-    var satIsHoly =true;
-    var sunIsHoly =true;
+    var friIsHoly = false;
+    var satIsHoly = false;
+    var sunIsHoly = false;
 
     pad = function (val) {
       val = "0" + val;
       return val.substr(val.length - 2);
     };
 
-    var holidays = "#01_01#04_25#08_15#11_01#12_25#12_26#06_02#12_08#05_01#2010_04_05#2010_10_19#2010_05_15#2011_04_04#";
+    var holidays = ''; //"#01_01#04_25#08_15#11_01#12_25#12_26#06_02#12_08#05_01#2010_04_05#2010_10_19#2010_05_15#2011_04_04#";
 
     var ymd = "#" + date.getFullYear() + "_" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
     var md = "#" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
@@ -131,8 +131,6 @@
     INVALID_DATA:"The data inserted are invalid for the field format.",
     ERROR_ON_FIELD:"Error on field",
     CLOSE_ALL_CONTAINERS:"close all?",
-
-
 
     DO_YOU_CONFIRM:"Do you confirm?"
   };

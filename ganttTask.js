@@ -73,9 +73,6 @@ function Task(kwargs) {
     this.duration = kwargs['duration'] || null;
     this.end = kwargs['end'] || null;
     
-    this.bid_timing = kwargs['bid_timing'] || 0;
-    this.bid_unit = kwargs['bid_unit'] || 'h';
-    
     this.is_scheduled = kwargs['is_scheduled'] || false;
     // schedule model:
     //   0: Effort
@@ -87,11 +84,20 @@ function Task(kwargs) {
     this.schedule_unit = kwargs['schedule_unit'] || 'h';
     this.schedule_constraint = kwargs['schedule_constraint'] || 0;
     
-//    console.log('kwargs["schedule_model"] :', kwargs['schedule_model']);
+    this.schedule_seconds = kwargs['schedule_seconds'] || 0;
+    this.total_logged_seconds = kwargs['total_logged_seconds'] || 0;
+    
+    
+    this.bid_timing = kwargs['bid_timing'] || this.schedule_timing;
+    this.bid_unit = kwargs['bid_unit'] || this.schedule_unit;
+    
+//    console.log('schedule_constraint : ', this.schedule_constraint);
 //    console.log('schedule_model      : ', this.schedule_model);
 //    console.log('schedule_timing     : ', this.schedule_timing);
 //    console.log('schedule_unit       : ', this.schedule_unit);
-//    console.log('schedule_constraint : ', this.schedule_constraint);
+//    console.log('bid_timing          : ', this.bid_timing);
+//    console.log('bid_unit            : ', this.bid_unit);
+    
     
     this.is_milestone = false;
     this.startIsMilestone = false;
@@ -135,6 +141,25 @@ Task.prototype.getResourcesString = function () {
   return ret;
 };
 
+Task.prototype.getResourcesString_with_links = function () {
+  var ret = "";
+  for (var i=0 ; i<this.resources.length ; i++) {
+    var resource = this.resources[i];
+    var res = this.master.getResource(resource.id);
+    if (res) {
+      ret = ret + (ret == "" ? "" : ", ") + "<a class='DataLink' href='#' stalker_target='central_content' stalker_href='view/user/" + resource.id + "'>" + res.name + "</a>";
+    }
+  }
+  return ret;
+};
+
+Task.prototype.link = function(){
+    return "<a class='DataLink' href='#' stalker_target='tasks_content_pane' stalker_href='view/task/" + this.id + "'>" + this.name + "</a>";
+};
+
+
+
+
 Task.prototype.createResource = function (kwargs) {
   var resource = new Resource(kwargs);
   this.resources.push(resource);
@@ -146,7 +171,7 @@ Task.prototype.createResource = function (kwargs) {
 Task.prototype.setPeriod = function (start, end) {
     //console.debug("setPeriod ",this.name,new Date(start),new Date(end));
     //var profilerSetPer = new Profiler("gt_setPeriodJS");
-
+    
     if (start instanceof Date) {
         start = start.getTime();
     }
@@ -179,7 +204,12 @@ Task.prototype.setPeriod = function (start, end) {
     }
     
     // update the schedule_timing
-    this.schedule_timing = this.schedule_timing * (end - start) / (this.end - this.start);
+    // TODO: we need to consider the timing_resolution while doing this
+    if (this.schedule_unit == 'h'){
+        this.schedule_timing = (this.schedule_timing * (end - start) / (this.end - this.start)  >> 0);
+    } else {
+        this.schedule_timing = ((this.schedule_timing * (end - start) / (this.end - this.start) * 10) >> 0) / 10;
+    }
     
     //if depends -> start is set to max end + lag of superior
     var sups = this.getSuperiors();
@@ -192,7 +222,7 @@ Task.prototype.setPeriod = function (start, end) {
         }
         
         //if changed by depends move it
-        if (computeStart(supEnd) != start) {
+        if (computeStart(supEnd) > start) {
             return this.moveTo(supEnd + 1, false);
         }
     }
@@ -320,7 +350,9 @@ Task.prototype.moveTo = function (start, ignoreMilestones) {
             link = sups[i];
             supEnd = Math.max(supEnd, link.end);
         }
-        start = supEnd + 1;
+        if (supEnd > start){
+            start = supEnd + 1;
+        }
     }
     //set a legal start
     start = computeStart(start);
@@ -658,7 +690,6 @@ Task.prototype.getDescendant = function() {
 
 Task.prototype.getDepends = function() {
     if (this.depends==null){
-        console.log('this.depends is null, recalculating this.depends');
         this.depends = [];
         if (this.depend_ids.length > 0){
             // find the tasks

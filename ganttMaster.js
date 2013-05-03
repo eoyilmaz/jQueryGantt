@@ -40,6 +40,22 @@ function GanttMaster() {
     
     this.timing_resolution = 3600000; // as miliseconds, for now it is 1 hour
     
+    // this is in minutes from midnight because Stalker is designed in that way
+    this.working_hours = {
+        'mon': [[540, 1080]],
+        'tue': [[540, 1080]],
+        'wed': [[540, 1080]],
+        'thu': [[540, 1080]],
+        'fri': [[540, 1080]],
+        'sat': [],
+        'sun': []
+    };
+    
+    this.daily_working_hours = 9; // this is the default
+    this.weekly_working_hours = 45;
+    this.weekly_working_days = 5;
+    this.yearly_working_days = 260.714; // 5 * 52.1428
+    
     this.canWriteOnParent=true;
     this.canWrite=true;
     
@@ -175,6 +191,7 @@ GanttMaster.prototype.addTask = function(task, parent) {
 /**
  * a project contains tasks, resources, roles, and info about permissions
  * @param project
+ * @param Deferred
  */
 GanttMaster.prototype.loadProject = function(project, Deferred) {
     var deferred = new Deferred;
@@ -184,6 +201,12 @@ GanttMaster.prototype.loadProject = function(project, Deferred) {
     for (var i=0; i<this.resources.length; i++){
         this.resource_ids.push(this.resources[i].id);
     }
+    
+    this.timing_resolution = project.timing_resolution || this.timing_resolution;
+    this.working_hours = project.working_hours || this.working_hours;
+    this.daily_working_hours = project.daily_working_hours || this.daily_working_hours;
+    this.weekly_working_hours = project.weekly_working_hours || this.weekly_working_hours;
+    this.weekly_working_days = project.weekly_working_days || this.weekly_working_days;
     
     this.canWrite = project.canWrite;
     this.canWriteOnParent = project.canWriteOnParent;
@@ -206,6 +229,10 @@ GanttMaster.prototype.loadProject = function(project, Deferred) {
         self.gantt.centerOnToday();
         deferred.resolve('success');
     });
+    
+    console.log('daily_working_hours : ', this.daily_working_hours);
+    console.log('timing_resolution   : ', this.timing_resolution);
+    console.log('working_hours       : ', this.working_hours);
     
     return deferred.promise;
 };
@@ -241,7 +268,9 @@ GanttMaster.prototype.loadTasks = function(tasks) {
                 schedule_constraint: task.schedule_constraint,
                 schedule_model: task.schedule_model,
                 schedule_timing: task.schedule_timing,
-                schedule_unit: task.schedule_unit
+                schedule_unit: task.schedule_unit,
+                schedule_seconds: task.schedule_seconds,
+                total_logged_seconds: task.total
             });
             
             // TODO: do it properly
@@ -267,8 +296,8 @@ GanttMaster.prototype.loadTasks = function(tasks) {
         this.task_ids.push(task.id); //lookup table for task ids
     }
     
-    console.log('this.tasks    : ', this.tasks);
-    console.log('this.task_ids : ', this.task_ids);
+//    console.log('this.tasks    : ', this.tasks);
+//    console.log('this.task_ids : ', this.task_ids);
     
     // find root tasks
     var root_tasks = [];
@@ -280,8 +309,8 @@ GanttMaster.prototype.loadTasks = function(tasks) {
         }
         // also fill the task.depends
         this.tasks[i].getDepends();
-        console.log('task.depend_ids : ', this.tasks[i].depend_ids);
-        console.log('task.depends    : ', this.tasks[i].depends);
+//        console.log('task.depend_ids : ', this.tasks[i].depend_ids);
+//        console.log('task.depends    : ', this.tasks[i].depends);
     }
     
     
@@ -311,6 +340,8 @@ GanttMaster.prototype.loadTasks = function(tasks) {
     for (var i=0; i<this.tasks.length; i++){
         this.task_ids.push(this.tasks[i].id);
     }
+    // set the first task selected
+    this.currentTask = this.tasks[0];
     
     //var prof=new Profiler("gm_loadTasks_addTaskLoop");
     for (var i=0 ; i<this.tasks.length ; i++) {
@@ -557,13 +588,13 @@ GanttMaster.prototype.endTransaction = function() {
     var ret = true;
 
     //no error -> commit
-    if (this.__currentTransaction.errors.length <= 0) {
+    //if (this.__currentTransaction.errors.length <= 0) {
         //console.debug("committing transaction");
 
         //put snapshot in undo
-        this.__undoStack.push(this.__currentTransaction.snapshot);
+        //this.__undoStack.push(this.__currentTransaction.snapshot);
         //clear redo stack
-        this.__redoStack = [];
+        //this.__redoStack = [];
 
         //shrink gantt bundaries
         this.gantt.originalStartMillis = Infinity;
@@ -577,23 +608,23 @@ GanttMaster.prototype.endTransaction = function() {
         }
         this.taskIsChanged(); //enqueue for gantt refresh
         //error -> rollback
-    } else {
-        ret = false;
-        //console.debug("rolling-back transaction");
-        //try to restore changed tasks
-        var oldTasks = JSON.parse(this.__currentTransaction.snapshot);
-        this.deletedTaskIds = oldTasks.deletedTaskIds;
-        this.loadTasks(oldTasks.tasks);
-        this.redraw();
-        
-        //compose error message
-        var msg = "";
-        for (var i=0 ; i < this.__currentTransaction.errors.length ; i++) {
-            var err = this.__currentTransaction.errors[i];
-            msg = msg + err.msg + "\n\n";
-        }
-        alert(msg);
-    }
+    //} else {
+    //    ret = false;
+    //    //console.debug("rolling-back transaction");
+    //    //try to restore changed tasks
+    //    var oldTasks = JSON.parse(this.__currentTransaction.snapshot);
+    //    this.deletedTaskIds = oldTasks.deletedTaskIds;
+    //    this.loadTasks(oldTasks.tasks);
+    //    this.redraw();
+    //    
+    //    //compose error message
+    //    var msg = "";
+    //    for (var i=0 ; i < this.__currentTransaction.errors.length ; i++) {
+    //        var err = this.__currentTransaction.errors[i];
+    //        msg = msg + err.msg + "\n\n";
+    //    }
+    //    alert(msg);
+    //}
     //reset transaction
     this.__currentTransaction = undefined;
 

@@ -290,9 +290,9 @@ Ganttalendar.prototype.create = function(zoom, originalStartmillis, originalEndM
   
   //if include today synch extremes
   if (this.includeToday){
-    var today=new Date().getTime();
-    originalStartmillis=originalStartmillis>today ? today:originalStartmillis;
-    originalEndMillis=originalEndMillis<today ? today:originalEndMillis;
+    var today = new Date().getTime();
+    originalStartmillis = originalStartmillis > today ? today : originalStartmillis;
+    originalEndMillis = originalEndMillis < today ? today : originalEndMillis;
   }
 
 
@@ -342,7 +342,7 @@ Ganttalendar.prototype.drawTask = function (task) {
   
   if (this.master.canWrite) {
     taskBox.resizable({
-      handles: 'e' + ( task.depends ? "" : ",w"), //if depends cannot move start
+      handles: 'e,w', //( task.depends ? "" : ",w"), //if depends cannot move start
       //helper: "ui-resizable-helper",
       //grid:[oneDaySize,oneDaySize],
 

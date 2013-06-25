@@ -36,8 +36,8 @@ $.gridify = {
     elems.each(function() {
       var table = $(this);
       
-//      console.log('table                       : ',  table);
-//      console.log('table.width() --- UPPER --- : ' + table.width());
+//      console.debug('table                       : ',  table);
+//      console.debug('table.width() --- UPPER --- : ' + table.width());
       
       
       //----------------------  header management start
@@ -58,11 +58,11 @@ $.gridify = {
 //          console.clear();
 //          table.attr('initialWidth', table.width());
 //          colHeader.attr('initialWidth', $(this).width());
-//          console.log('***********************');
-//          console.log('e.pageX                 : ' + e.pageX);
-//          console.log('colHeader.offset().left : ' + colHeader.offset().left);
-//          console.log('mousePos                : ' + mousePos);
-//          console.log('initialWidth            : ' + colHeader.width());
+//          console.debug('***********************');
+//          console.debug('e.pageX                 : ' + e.pageX);
+//          console.debug('colHeader.offset().left : ' + colHeader.offset().left);
+//          console.debug('mousePos                : ' + mousePos);
+//          console.debug('initialWidth            : ' + colHeader.width());
 //          
           if (colHeader.width() - mousePos < opt.colResizeZoneWidth) {
             $("body").addClass("gdfHResizing");
@@ -85,12 +85,12 @@ $.gridify = {
             var new_width = (e.pageX - $.gridify.columInResize.offset().left);
             $.gridify.columInResize.width(new_width);
               
-//            console.log('****************************************');
-//            console.log('table.width()                         : ' + table.width());
-//            console.log('initialWidth                          : ' + colHeader.attr('initialWidth'));
-//            console.log('e.pageX                               : ' + e.pageX);
-//            console.log('$.gridify.columInResize.offset().left : ' + $.gridify.columInResize.offset().left);
-//            console.log('new_width                             : ' + new_width);
+//            console.debug('****************************************');
+//            console.debug('table.width()                         : ' + table.width());
+//            console.debug('initialWidth                          : ' + colHeader.attr('initialWidth'));
+//            console.debug('e.pageX                               : ' + e.pageX);
+//            console.debug('$.gridify.columInResize.offset().left : ' + $.gridify.columInResize.offset().left);
+//            console.debug('new_width                             : ' + new_width);
             
 //            table.width(
 //                table.attr('initialWidth') + colHeader.width() - colHeader.attr('initialWidth')
@@ -183,58 +183,19 @@ $.splittify = {
 };
 
 //<%------------------------------------------------------------------------  UTILITIES ---------------------------------------------------------------%>
-function computeStart(start, timing_resolution) { // TODO: Update this to support hours
-  //console.log('computeStart running');
-    // TODO: this is the function that you are going to round the start to the timing resolution
-    // round to the closest day start by adding 12 hours to the start and then
-    // setting the hour value to 00:00:00.000
-//  var d = new Date(start+3600000*12);
-//  d.setHours(0, 0, 0, 0);
-  //move to the next working day if the start is a holiday
-//  while (isHoliday(d)) {
-//    d.setDate(d.getDate() + 1);
-//  }
-//  d.setHours(0, 0, 0, 0);
-//  return d.getTime();
-    //return start;
-    
+function computeStart(start, timing_resolution) {
     // round to the given time interval
     timing_resolution = timing_resolution || 3600000; // 1 hour
     return (((start + timing_resolution * 0.5) / timing_resolution) >> 0 ) * timing_resolution;
 }
 
-function computeEnd(end, timing_resolution) { // TODO: Update this to support hours
-  //console.log('computeEnd running');
-    // TODO: this is the function that you are going to round the end to the timing resolution
-    // round to the closest day end by adding 12 hours to the end and then
-    // setting the hour value to 23:59:59:999
-//  var d = new Date(end-3600000*12);
-//  d.setHours(23, 59, 59, 999);
-  //move to next working day
-//  while (isHoliday(d)) {
-//    d.setDate(d.getDate() + 1);
-//  }
-//  d.setHours(23, 59, 59, 999);
-//  return d.getTime();
-//    return end;
-    
+function computeEnd(end, timing_resolution) {
     // round to the given time interval
     timing_resolution = timing_resolution || 3600000; // 1 hour
     return (((end + timing_resolution * 0.5) / timing_resolution) >> 0 ) * timing_resolution;
 }
 
 function computeEndByDuration(start, duration, timing_resolution){
-    //var d = new Date(start);
-    //console.debug("computeEndByDuration start ",d,duration)
-    //var q = duration - 1;
-    //while (q > 0) {
-    //  d.setDate(d.getDate() + 1);
-    //  if (!isHoliday(d))
-    //    q--;
-    //}
-    //d.setHours(23, 59, 59, 999);
-    //return d.getTime();
-    
     timing_resolution = timing_resolution || 3600000; // 1 hour
     
     var end = start + duration - 1;

@@ -1,3 +1,18 @@
+
+/*.gantt, a {*/
+  /*text-decoration: none;*/
+  /*font-weight: bold;*/
+  /*color: #16ABDD;*/
+/*}*/
+
+/*.gantt, th, .tableHeader {*/
+  /*font-weight: normal;*/
+  /*color: #FFFFFF;*/
+  /*border: none;*/
+  /*background-color: #dedede;*/
+  /*padding:2px*/
+/*}*/
+
 .gdfTable {
     table-layout: fixed;
     border-collapse: separate;
@@ -20,6 +35,7 @@
 .gdfColHeader {
     min-width: 5px;
     height: 30px;
+    background-color: #DEDEDE;
 }
 
 .gdfCell, .gdfColHeader {
@@ -71,15 +87,16 @@
     height: 100%;
 }
 
-.splitBox1, .splitBox2 {
-    overflow-x: scroll;
+.splitBox1{
+    overflow-x: hidden;
     overflow-y: hidden;
-
-    /*background-color: yellow;*/
+    background-color: rgb(240, 240, 240);;
 }
 
 .splitBox2 {
-    /*background-color: orange;*/
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-color: rgb(240, 240, 240);;
 }
 
 .unselectable {
@@ -111,8 +128,9 @@
 .holyH{
     background-color: #dedede;
 }
+
 .holy{
-    background-color: #FFF5E6;
+    background-color: rgb(224, 227, 230);
 }
 
 
@@ -142,6 +160,7 @@
 
 .ganttHead1,.ganttHead2{
     height:20px;
+    background-color: #DEDEDE;
 }
 
 .ganttHead1 th,.ganttHead2 th{
@@ -199,18 +218,88 @@
     height: 15px;
 }
 
+
+/*PROJECT BOX*/
+.projectBox{
+    position: absolute;
+    margin-top: 2px;
+    z-index: 100;
+}
+
+.projectBox .layout {
+    background-color: black;
+    border-radius: 3px 3px 3px 3px;
+    height: 18px;
+}
+
+.projectBox .layout .leftPin {
+    top: 3px;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    /*background: url('../images/parentTaskBoxLeftPin.png') no-repeat;*/
+}
+
+.projectBox .layout .rightPin {
+    top: 3px;
+    right: 0;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    /*background: url('../images/parentTaskBoxRightPin.png') no-repeat;*/
+}
+
+.projectBox .taskStatus {
+    left:5px;
+    top:4px;
+    position:absolute;
+    width:10px;
+    height:10px;
+}
+
+.projectBox .layout .milestone{
+    top: 0;
+    position: absolute;
+    width: 16px;
+    background: url('../images/milestone.png') no-repeat;
+    height: 16px;
+    display: none;
+}
+
+.projectBox .layout .milestone.end{
+    right:0;
+}
+.projectBox .layout .milestone.active{
+    display:block;
+}
+
+.projectBox.hasChild .layout{
+    /*border:2px solid black;*/
+}
+
+.projectBox .taskProgress{
+    height:3px;
+    position:absolute;
+}
+
+.projectBox .taskBid{
+    height:3px;
+    position:absolute;
+    /*border-radius: 3px;*/
+    top: 3px;
+}
+
+.projectBox .layout.extDep{
+    background-image:url('../images/hasExternalDeps.png');
+}
+
 /*TASK BOX*/
 .taskBox{
     position:absolute;
     height:15px;
     margin-top:2px;
     z-index:100;
-}
-
-.taskBox .layout {
-    height:100%;
     border-radius: 3px;
-    /*background: #CCCCCC; *//* Old browsers */
     border:1px solid #AAAAAA;
     
     background-image: linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
@@ -226,6 +315,10 @@
         color-stop(0, #E0E0E0),
         color-stop(0.50, #FFFFFF)
     );    
+}
+
+.taskBox .layout {
+    height:100%;
 }
 
 .taskBox .taskStatus {
@@ -273,8 +366,8 @@
         left top,
         color-stop(0, #6DD900),
         color-stop(0.50, #99FF33)
-    );    
-    
+    );
+    border-radius: 2px;
 }
 
 .taskBox .taskExtraTiming{
@@ -300,7 +393,7 @@
 
 .parentTaskBox .layout {
     height: 5px;
-    background: black;
+    background: lightgray;
     border-radius: 3px 3px 0 0;
 }
 
@@ -345,7 +438,6 @@
 }
 
 .parentTaskBox.hasChild .layout{
-    /*border:2px solid black;*/
 }
 
 .parentTaskBox .taskProgress{
@@ -356,11 +448,100 @@
 .parentTaskBox .taskBid{
     height:3px;
     position:absolute;
-    /*border-radius: 3px;*/
     top: 3px;
 }
 
 .parentTaskBox .layout.extDep{
+    background-image:url('../images/hasExternalDeps.png');
+}
+
+/*TIME LOG BOX*/
+.timeLogBox{
+    position:absolute;
+    height:15px;
+    margin-top:2px;
+    z-index:100;
+    border-radius: 3px;
+    border:1px solid #AAAAAA;
+    
+    background-image: linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
+    background-image: -o-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
+    background-image: -moz-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
+    background-image: -webkit-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
+    background-image: -ms-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%);
+    
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, #E0E0E0),
+        color-stop(0.50, #FFFFFF)
+    );    
+}
+
+.timeLogBox .layout {
+    height:100%;
+}
+
+.timeLogBox .taskStatus {
+    left:5px;
+    top:4px;
+    position:absolute;
+    width:10px;
+    height:10px;
+}
+
+.timeLogBox .layout .milestone{
+    top: 0;
+    position:absolute;
+    width:16px;
+    background: url('../images/milestone.png') no-repeat;
+    height:16px;
+    display:none;
+}
+.timeLogBox .layout .milestone.end{
+    right:0;
+}
+
+.timeLogBox .layout .milestone.active{
+    display:block;
+}
+
+.timeLogBox.hasChild .layout{
+    border-top:2px solid black;
+}
+
+.timeLogBox .taskProgress{
+    /*height:3px;*/
+    height: 100%;
+    position:absolute;
+    
+    background-image: linear-gradient(bottom, #6DD900 0%, #99FF33 50%);
+    background-image: -o-linear-gradient(bottom, #6DD900 0%, #99FF33 50%);
+    background-image: -moz-linear-gradient(bottom, #6DD900 0%, #99FF33 50%);
+    background-image: -webkit-linear-gradient(bottom, #6DD900 0%, #99FF33 50%);
+    background-image: -ms-linear-gradient(bottom, #6DD900 0%, #99FF33 50%);
+    
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, #6DD900),
+        color-stop(0.50, #99FF33)
+    );
+    border-radius: 2px;
+}
+
+.timeLogBox .taskExtraTiming{
+    height: 7px;
+    position: absolute;
+    border-radius: 2px;
+    top: 9px;
+    right: 0;
+    background-color: red;
+}
+
+.timeLogBox .layout.extDep{
     background-image:url('../images/hasExternalDeps.png');
 }
 
@@ -412,6 +593,41 @@
     position: absolute;
 }
 
+.projectEditRow,.emptyRow {
+    height:19px;
+}
+
+.projectEditRow input{
+    border: 0 none;
+    font-size: 12px;
+    height: 14px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: Arial, sans-serif
+}
+
+.projectEditRow.rowSelected td,.projectEditRow.rowSelected input{
+    background-color:#FFFF99;
+}
+
+.parentTaskEditRow,.emptyRow {
+    height:19px;
+}
+
+.parentTaskEditRow input{
+    border: 0 none;
+    font-size: 12px;
+    height: 14px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: Arial, sans-serif
+}
+
+.parentTaskEditRow.rowSelected td,.parentTaskEditRow.rowSelected input{
+    background-color:#FFFF99;
+}
 
 .taskEditRow,.emptyRow {
     height:19px;
@@ -428,6 +644,24 @@
 }
 
 .taskEditRow.rowSelected td,.taskEditRow.rowSelected input{
+    background-color:#FFFF99;
+}
+
+.resourceEditRow,.emptyRow {
+    height:19px;
+}
+
+.resourceEditRow input{
+    border: 0 none;
+    font-size: 12px;
+    height: 14px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: Arial, sans-serif
+}
+
+.resourceEditRow.rowSelected td,.resourceEditRow.rowSelected input{
     background-color:#FFFF99;
 }
 
@@ -465,7 +699,6 @@
     border:#666 2px solid;
 }
 
-
 .ui-resizable-helper { border: 1px dotted #00F;  }
 .ui-resizable-e, .ui-resizable-w {width: 5px;}
 .ui-draggable{
@@ -477,4 +710,38 @@
     position: absolute;
     width: 5px;
     height: 10px;
+}
+
+.clippedStart {
+    left: 0;
+    border-left: 6px double red;
+    position: absolute;
+}
+
+.clippedEnd {
+    right: 0;
+    border-right: 6px double red;
+    position: absolute;
+}
+
+.folder {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+}
+
+.folder.collapsed {
+    background: url('../images/gmail_icons.png') -40px -120px no-repeat;
+}
+
+.folder.collapsed:hover {
+    background: url('../images/gmail_icons.png') -60px -120px no-repeat;
+}
+
+.folder.uncollapsed {
+    background: url('../images/gmail_icons.png') 0 -120px no-repeat;
+}
+
+.folder.uncollapsed:hover{
+    background: url('../images/gmail_icons.png') -20px -120px no-repeat;
 }
